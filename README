@@ -1,0 +1,28 @@
+Cauia Alexandru 334CB
+                        Implementarea temei 1 APD
+Pe langa clasa argument am inca o clasa Change_ID pentru ca am nevoie sa 
+schimb mereu ID threadului, dar ce se afla in Argument se schimba sau se 
+creeaza doar odata, cu excceptia la close_files care numara cate fisiere am 
+citit.
+
+void*map (void* arg)
+Ca sa impart fisierele de intrare in mod dinamic fac un while in interiorul
+caruia citesc numele fisierelor si incrementez close_files(ca sa stiu cand ies din bucla)
+intr-un mutex, pentru ca am nevoie sa nu sa se intercaleze acolo threadurile
+si fiecare sa ia cate unul. Apoi deschid fisierele, trec prin toate numerele si
+apelez functia mapping.
+
+void maping(int reduce_threads, int thread_ID, int number, Argument *arg)
+Incep loop-ul de la 2 pentru ca e cel mai mic root. Daca functia get_Nth_sqrt
+intoarce 1 sau ceva mai mare inseamna ca a gasit un nr intreg pentru Nth root
+a numarului. Inserez nr in tridimensional vector la poz thread_ID -1, pentru
+ca am pus threadurile de la 1 si la poz root - 2 in set.
+
+void reduce(void* arg)
+Fiecare thread al reducerii pune la (ID - 1 si - threadurile Map) numerele care au rezultatul
+intreg la Nth root incepand cu 2. ID - 1 si - threadurile Map, pentru ca ID-urile
+merg de la 1 la n(n e nr total de threaduri).
+
+void* map_or_reduce(void* arg)
+Dupa ID-urile threadurilor decid daca fac map sau trec la reduce. Ca sa ma asigur
+ca toate operatiile map au terminat folosesc bariera.
